@@ -1,42 +1,22 @@
-import React from "react";
-import {
-    BrowserRouter as Router,
-    Switch,
-    Route
-} from "react-navigation";
+import React from 'react';
+import {Text, View} from 'react-native';
+import {createAppContainer} from 'react-navigation';
+import {createBottomTabNavigator} from 'react-navigation-tabs';
+import {MapScreen} from './screens/MapScreen'
 
-import { Index } from "./pages/Index";
-import { Resolve } from "./pages/Resolve";
-import { General } from "./pages/General";
-import { Maintenance } from "./pages/Maintenance";
-import { Header } from "./components/Header";
-import { useLocalStorage } from "./hooks/useLocalStorage";
-import { Login } from "./pages/Login";
-
-function App() {
-    const [token] = useLocalStorage("authentication_token", undefined);
-
-    if (!token) {
-        return <Login></Login>;
-    }
-
+class SettingsScreen extends React.Component {
+  render() {
     return (
-        <Router>
-            <Header />
-            <Switch>
-                <Route path="/resolve">
-                    <Resolve />
-                </Route>
-                <Route path="/announce">
-                    <General />
-                </Route>
-                <Route path="/maintenance">
-                    <Maintenance />
-                </Route>
-                <Index />
-            </Switch>
-        </Router>
+      <View style={{flex: 1, justifyContent: 'center', alignItems: 'center'}}>
+        <Text>Settings!</Text>
+      </View>
     );
+  }
 }
 
-export default App;
+const TabNavigator = createBottomTabNavigator({
+  Map: MapScreen,
+  Settings: SettingsScreen,
+});
+
+export const App = createAppContainer(TabNavigator);
