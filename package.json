@@ -14,7 +14,10 @@
     "react-native-maps": "^0.26.1",
     "react-native-reanimated": "^1.4.0",
     "react-navigation": "^4.0.10",
+    "react-navigation-hooks": "^1.1.0",
+    "react-navigation-stack": "^1.10.3",
     "react-navigation-tabs": "^2.6.0",
+    "styled-components": "^4.4.1",
     "uuid": "^3.3.3"
   },
   "devDependencies": {

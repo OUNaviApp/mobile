@@ -1,4 +1,4 @@
-import React, {useState} from 'react';
+import React, {useState, useEffect} from 'react';
 import {
   View,
   Image,
@@ -8,7 +8,9 @@ import {
   Dimensions,
   TouchableOpacity,
   TextInput,
+  TouchableWithoutFeedback,
 } from 'react-native';
+import {useNavigation} from 'react-navigation-hooks';
 import MapView, {Marker} from 'react-native-maps';
 import uuid from 'uuid/v4';
 
@@ -18,6 +20,8 @@ export const MapScreen = () => {
   const [creationDialogVisibility, setCreationDialogVisibility] = useState(
     false,
   );
+
+  const navigation = useNavigation();
 
   const openMarkerDialog = e => {
     setNewMarker({
@@ -37,12 +41,13 @@ export const MapScreen = () => {
   };
 
   const onMarkerPress = marker => () => {
-    Alert.alert('You tapped marker ID', marker.id);
+    navigation.push("Marker", marker)
   };
 
   const getImage = type => {
     switch (type) {
       case 'Elevator':
+      case 'Escalator':
         return require('../assets/green-e.png');
       case 'Ramp':
         return require('../assets/green-r.png');
@@ -50,6 +55,12 @@ export const MapScreen = () => {
         return require('../assets/red-!.png');
     }
   };
+
+  const readyToSubmit =
+    newMarker.title &&
+    newMarker.title.length > 0 &&
+    newMarker.description.length > 0 &&
+    newMarker.type !== '';
 
   return (
     <View style={{flex: 1, justifyContent: 'center', alignItems: 'center'}}>
@@ -96,6 +107,18 @@ export const MapScreen = () => {
             alignItems: 'center',
             backgroundColor: 'rgba(0,0,0,0.5)',
           }}>
+          <TouchableWithoutFeedback
+            onPress={() => setCreationDialogVisibility(false)}>
+            <View
+              style={{
+                position: 'absolute',
+                top: 0,
+                left: 0,
+                right: 0,
+                bottom: 0,
+              }}
+            />
+          </TouchableWithoutFeedback>
           <View
             style={{
               width: Dimensions.get('window').width * 0.85,
@@ -105,9 +128,32 @@ export const MapScreen = () => {
               flexDirection: 'column',
               padding: 10,
             }}>
-            <Text style={{fontSize: 28, fontWeight: 'bold', marginBottom: 10}}>
-              Create New Marker
-            </Text>
+            <View
+              style={{
+                flexDirection: 'row',
+                justifyContent: 'space-between',
+                alignItems: 'center',
+              }}>
+              <Text
+                style={{fontSize: 28, fontWeight: 'bold', marginBottom: 10}}>
+                Create New Marker
+              </Text>
+              <TouchableOpacity
+                onPress={() => setCreationDialogVisibility(false)}
+                style={{
+                  padding: 10,
+                  paddingRight: 0,
+                }}>
+                <Text
+                  style={{
+                    fontSize: 28,
+                    lineHeight: 28,
+                    fontWeight: 'bold',
+                  }}>
+                  ×
+                </Text>
+              </TouchableOpacity>
+            </View>
             <View
               style={{
                 width: '100%',
@@ -143,7 +189,7 @@ export const MapScreen = () => {
                   borderColor: 'black',
                   width: '100%',
                   fontSize: 18,
-                  maxHeight: 180
+                  maxHeight: 180,
                 }}
                 placeholder="Description"
                 value={newMarker.description}
@@ -156,8 +202,13 @@ export const MapScreen = () => {
                 }
               />
             </View>
-            <View>
-              {['Elevator', 'Ramp', 'Hazard'].map(type => (
+            <View
+              style={{
+                flexDirection: 'row',
+                flexWrap: 'wrap',
+                justifyContent: 'space-between',
+              }}>
+              {['Elevator', 'Ramp', 'Hazard', 'Escalator'].map(type => (
                 <TouchableOpacity
                   key={type}
                   onPress={() => setNewMarker(marker => ({...marker, type}))}
@@ -167,10 +218,11 @@ export const MapScreen = () => {
                     padding: 5,
                     paddingVertical: 10,
                     borderRadius: 5,
-                    marginVertical: 5,
+                    margin: 5,
                     flexDirection: 'row',
                     justifyContent: 'center',
                     alignItems: 'center',
+                    width: '45%',
                   }}>
                   <Text
                     style={{
@@ -195,7 +247,9 @@ export const MapScreen = () => {
                 flexDirection: 'row',
                 justifyContent: 'center',
                 alignItems: 'center',
-              }}>
+                opacity: readyToSubmit ? 1 : 0.3,
+              }}
+              disabled={!readyToSubmit}>
               <Text
                 style={{
                   color: 'white',
@@ -211,3 +265,7 @@ export const MapScreen = () => {
     </View>
   );
 };
+
+MapScreen.navigationOptions = {
+  header: null,
+}
