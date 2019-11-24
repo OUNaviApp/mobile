@@ -47,7 +47,7 @@ export const MapScreen = () => {
       case 'Ramp':
         return require('../assets/green-r.png');
       case 'Hazard':
-        return require('../assets/red-!.png')
+        return require('../assets/red-!.png');
     }
   };
 
@@ -108,45 +108,54 @@ export const MapScreen = () => {
             <Text style={{fontSize: 28, fontWeight: 'bold', marginBottom: 10}}>
               Create New Marker
             </Text>
-            {[
-              {
-                title: 'Title',
-                property: 'title',
-                placeholder: 'Example Title',
-              },
-              {
-                title: 'Description',
-                property: 'description',
-                placeholder: 'Example Description',
-              },
-            ].map(field => {
-              return (
-                <View
-                  key={field.property}
-                  style={{
-                    width: '100%',
-                    marginBottom: 5,
-                  }}>
-                  <Text style={{fontSize: 14}}>{field.title}</Text>
-                  <TextInput
-                    style={{
-                      borderBottomWidth: 1,
-                      borderColor: 'black',
-                      width: '100%',
-                      fontSize: 24,
-                    }}
-                    placeholder={field.placeholder}
-                    value={newMarker[field.property]}
-                    onChangeText={text =>
-                      setNewMarker(marker => ({
-                        ...marker,
-                        [field.property]: text,
-                      }))
-                    }
-                  />
-                </View>
-              );
-            })}
+            <View
+              style={{
+                width: '100%',
+                marginBottom: 5,
+              }}>
+              <Text style={{fontSize: 14}}>Title</Text>
+              <TextInput
+                style={{
+                  borderBottomWidth: 1,
+                  borderColor: 'black',
+                  width: '100%',
+                  fontSize: 24,
+                }}
+                placeholder="Title"
+                value={newMarker.title}
+                onChangeText={title =>
+                  setNewMarker(marker => ({
+                    ...marker,
+                    title,
+                  }))
+                }
+              />
+            </View>
+            <View
+              style={{
+                width: '100%',
+                marginBottom: 5,
+              }}>
+              <Text style={{fontSize: 14}}>Description</Text>
+              <TextInput
+                style={{
+                  borderBottomWidth: 1,
+                  borderColor: 'black',
+                  width: '100%',
+                  fontSize: 18,
+                  maxHeight: 180
+                }}
+                placeholder="Description"
+                value={newMarker.description}
+                multiline
+                onChangeText={description =>
+                  setNewMarker(marker => ({
+                    ...marker,
+                    description,
+                  }))
+                }
+              />
+            </View>
             <View>
               {['Elevator', 'Ramp', 'Hazard'].map(type => (
                 <TouchableOpacity
