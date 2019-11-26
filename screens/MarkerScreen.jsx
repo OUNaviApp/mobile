@@ -1,7 +1,10 @@
 import React from 'react';
-import {View, Image, Text, ScrollView} from 'react-native';
+import {View, Alert, Text, ScrollView} from 'react-native';
 import MapView, {Marker} from 'react-native-maps';
 import styled from 'styled-components';
+import {useSelector} from 'react-redux';
+import {ImageMarker} from '../components/ImageMarker';
+import { useNavigation } from 'react-navigation-hooks';
 
 const Label = styled(Text)`
   font-size: 24px;
@@ -17,22 +20,20 @@ const Value = styled(Text)`
 `;
 
 export const MarkerScreen = ({navigation}) => {
-  const getImage = type => {
-    switch (type) {
-      case 'Elevator':
-      case 'Escalator':
-        return require('../assets/green-e.png');
-      case 'Ramp':
-        return require('../assets/green-r.png');
-      case 'Hazard':
-        return require('../assets/red-!.png');
-    }
-  };
+  const id = navigation.state.params.id;
 
-  const marker = navigation.state.params;
+  const marker = useSelector(state =>
+    state.markerReducer.markers.find(m => m.id === id),
+  );
+
+  if(!marker){
+    Alert.alert("Marker no longer exists");
+    navigation.goBack();
+    return null;
+  }
 
   return (
-    <View style={{ flex:1 }}>
+    <View style={{flex: 1}}>
       <MapView
         style={{
           width: '100%',
@@ -45,24 +46,9 @@ export const MarkerScreen = ({navigation}) => {
           longitudeDelta: 0.001,
         }}
         showsUserLocation>
-        <Marker
-          key={marker.id}
-          coordinate={{
-            latitude: marker.latitude,
-            longitude: marker.longitude,
-          }}>
-          <Image
-            source={getImage(marker.type)}
-            style={{
-              width: 50,
-              height: 50,
-              transform: [{translateY: -25}],
-            }}
-            resizeMode="contain"
-          />
-        </Marker>
+        <ImageMarker marker={marker} key={marker.id} />
       </MapView>
-      <ScrollView style={{flex:1}}>
+      <ScrollView style={{flex: 1}}>
         <Label>Title</Label>
         <Value style={{marginBottom: 14}}>{marker.title}</Value>
         <Label>Description</Label>

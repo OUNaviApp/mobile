@@ -33,7 +33,7 @@ export const MapScreen = () => {
   };
 
   const onMarkerPress = marker => () => {
-    navigation.push('Marker', marker);
+    navigation.push('Marker', {id: marker.id});
   };
 
   const markers = useSelector(state => state.markerReducer.markers);
@@ -42,10 +42,12 @@ export const MapScreen = () => {
     setRegion(e);
   };
 
-  const closeMarkers = markers.filter(marker=>{
+  const closeMarkers = markers.filter(marker => {
     const {latitude, longitude} = region;
     const MAX_DISTANCE = 0.1;
-    const distance = Math.pow(marker.latitude - latitude, 2) + Math.pow(marker.longitude - longitude, 2);
+    const distance =
+      Math.pow(marker.latitude - latitude, 2) +
+      Math.pow(marker.longitude - longitude, 2);
     return distance < MAX_DISTANCE;
   });
 
