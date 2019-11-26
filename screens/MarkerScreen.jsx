@@ -73,5 +73,5 @@ export const MarkerScreen = ({navigation}) => {
 };
 
 MarkerScreen.navigationOptions = ({navigation}) => ({
-  title: 'Selected Marker',
+  title: navigation.state.params.type,
 });
